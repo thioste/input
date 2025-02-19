@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System - jordanmwinukatz P2P Trading</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            gap: 50px;
+        }
+
+        .login-box {
+            background-color: #FFFFFF;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 300px;
+            animation: fadeIn 0.8s ease-in;
+            transform-origin: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #001F3F;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-form input {
+            padding: 10px;
+            border: 1px solid #F5F5F5;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .login-form input:focus {
+            transform: scale(1.02);
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+
+        .login-form button {
+            background-color: #007BFF;
+            color: #FFFFFF;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background-color: #001F3F;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .login-form button:active {
+            transform: translateY(0);
+        }
+
+        nav {
+            background-color: #001F3F;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: #007BFF;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo h1 {
+            color: #FFFFFF;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Add these new styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #FFFFFF;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .registration-form input, 
+        .registration-form button {
+            padding: 10px;
+            border: 1px solid #F5F5F5;
+            border-radius: 5px;
+        }
+
+        .verification-message {
+            text-align: center;
+            color: #28a745;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="logo2.png" alt="Logo" style="height: 90px;">
+            <h1>Welcome to jordanmwinukatz P2P Trading</h1>
+        </div>
+        
+    </nav>
+    <div class="container">
+        <!-- User Login -->
+        <div class="login-box">
+            <h2>User Login</h2>
+            <form class="login-form" action="users.html">
+                <input type="text" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <button type="button">Register New User</button>
+            </form>
+        </div>
+
+        <!-- Admin Login -->
+        <div class="login-box">
+            <h2>Admin Login</h2>
+            <form class="login-form" action="admin.html">
+                <input type="text" placeholder="Admin Username" required>
+                <input type="password" placeholder="Admin Password" required>
+                <button type="submit">Login as Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register New User</h2>
+            <form class="registration-form" id="registrationForm">
+                <input type="text" placeholder="Full Names" required>
+                <input type="email" placeholder="Email" required>
+                <input type="tel" placeholder="Phone Number" required>
+                <input type="file" accept="image/png" required>
+                <p>Note: Your registration will need admin approval. You will receive a verification code via email that expires in 5 minutes.</p>
+                <button type="submit">Submit Registration</button>
+            </form>
+            <div class="verification-message" id="verificationMessage">
+                Registration submitted! Please check your email for the verification code.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get modal elements
+        const modal = document.getElementById('registrationModal');
+        const registerBtn = document.querySelector('button[type="button"]');
+        const closeBtn = document.querySelector('.close');
+        const registrationForm = document.getElementById('registrationForm');
+        const verificationMessage = document.getElementById('verificationMessage');
+
+        // Open modal when register button is clicked
+        registerBtn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Close modal when X is clicked
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Handle form submission
+        registrationForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            // Here you would typically:
+            // 1. Collect form data
+            // 2. Send to backend server
+            // 3. Backend would:
+            //    - Store user data
+            //    - Send email to admin for approval
+            //    - Generate verification code that expires in 5 minutes
+            //    - Send verification code to user's email
+
+            // Show verification message
+            registrationForm.style.display = 'none';
+            verificationMessage.style.display = 'block';
+            
+            // Reset and close modal after 3 seconds
+            setTimeout(() => {
+                modal.style.display = "none";
+                registrationForm.style.display = 'flex';
+                verificationMessage.style.display = 'none';
+                registrationForm.reset();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

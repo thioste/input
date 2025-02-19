@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Transaction Input System</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <!-- Add your logo image here -->
+      <img src="logo2.png" alt="Logo" style="height: 90px;">
+    </div>
+    <button class="nav-toggle" id="navToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul id="navMenu">
+      <li><a href="admin.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="reports.html"><i class="fas fa-chart-line"></i> Transactions</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="home.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </nav>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #FFFFFF;
+      color: #2C2C2C;
+      min-width: 320px;
+    }
+
+    nav {
+      background-color: #001F3F;
+      padding: 0.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      margin-right: auto;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      gap: 2rem;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      background-color: rgba(0, 123, 255, 0.8);
+    }
+
+    nav ul li a.active {
+      background-color: #007BFF;
+    }
+
+    .nav-toggle {
+      display: none;
+    }
+
+    @media screen and (max-width: 768px) {
+      nav {
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-left: 0;
+      }
+
+      nav ul {
+        position: fixed;
+        top: 48px;
+        right: 0;
+        background-color: #001F3F;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        width: 200px;
+      }
+
+      nav ul.show {
+        transform: translateX(0);
+      }
+
+      nav ul li {
+        width: 100%;
+      }
+
+      nav ul li a {
+        width: 100%;
+        padding: 0.75rem 1rem;
+      }
+    }
+    section {
+      margin: 25px;
+      padding: 25px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #001F3F;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 500;
+      color: #2C2C2C;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border: 1px solid #F5F5F5;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #007BFF;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #001F3F;
+      transform: translateY(-1px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #F5F5F5;
+      text-align: left;
+    }
+
+    th {
+      background-color: #001F3F;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    tr:nth-child(even) {
+      background-color: #F5F5F5;
+    }
+
+    tr:hover {
+      background-color: #F5F5F5;
+    }
+
+    .buy-indicator {
+      color: #28A745;
+    }
+
+    .sell-indicator {
+      color: #D32F2F;
+    }
+
+    .profit-highlight {
+      color: #FFD700;
+    }
+
+    .loss-display {
+      color: #B22222;
+    }
+  </style>
+
+  <header>
+    <div class="logo-container">
+      <span class="logo-placeholder"></span>
+    </div>
+  </header>
+
+  <!-- Transaction Input Form -->
+  <section class="transaction-form">
+    <h2>New Transaction</h2>
+    <form>
+      <label for="date">Date:</label>
+      <input type="date" id="date" value="2023-10-25" readonly>
+
+      <label for="num-transactions">Number of Transactions:</label>
+      <input type="number" id="num-transactions" placeholder="Enter number of transactions">
+
+      <label for="transaction-id">Transaction ID:</label>
+      <input type="text" id="transaction-id" placeholder="25012025-1-SELL">
+
+      <label for="price-per-unit">Price per Unit (TZS):</label>
+      <input type="number" id="price-per-unit" placeholder="Auto-filled" readonly>
+
+      <label for="gross-value">Gross Value (USDT):</label>
+      <input type="number" id="gross-value" placeholder="Enter gross value">
+
+      <label for="platform-fee">Crypto Trading Platforms Fee (USDT):</label>
+      <input type="number" id="platform-fee" placeholder="Auto-calculated" readonly>
+
+      <label for="net-value">Net Value (USDT):</label>
+      <input type="number" id="net-value" placeholder="Auto-calculated" readonly>
+
+      <label for="conversion-rate">Conversion Rate (TZS to USDT):</label>
+      <input type="number" id="conversion-rate" placeholder="Enter conversion rate">
+
+      <label for="input-amount">Input Amount:</label>
+      <input type="number" id="input-amount" placeholder="Enter input amount">
+
+      <label for="output-amount">Output Amount:</label>
+      <input type="number" id="output-amount" placeholder="Enter output amount">
+
+      <label for="capital">Capital:</label>
+      <input type="number" id="capital" placeholder="Enter capital">
+
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+</body>
+</html>
