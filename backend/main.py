@@ -39,8 +39,8 @@ def create_access_token(data: dict, expires_delta: timedelta):
 
 def send_email(to_email: str, auth_code: str):
     # Replace with actual SMTP settings
-    sender_email = "davidnjihia536@gmail.com"
-    sender_password = "dwih fegs qgeu ulfd"
+    sender_email = ""
+    sender_password = ""
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
 
