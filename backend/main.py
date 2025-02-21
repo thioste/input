@@ -1,22 +1,32 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Form, UploadFile, File, Depends, HTTPException, status
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
 import smtplib
 from email.mime.text import MIMEText
-from typing import Optional
+from typing import Optional, Annotated
 import random
 import string
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+import shutil
 
 from models import engine, User, create_db
+
+load_dotenv()
 
 app = FastAPI()
 
 # Secret Key for JWT
-SECRET_KEY = "4686a5f3f2c54a712298ba363265b3996207a63b0c82997f1ad9ac1442914f80871f002e098a51e541f7e36e78600e55db1b4a39d9d950b9dd16f38aabf419559554036e77639b850528de6c785e38bb439b7195b9420ae586605e5035448800b6833dccf5b2805b85c486623094a055eb4b15418f442ececa38641f8d560646945ece19490bbb963854b76ca57ca953119422c62c0f70998cfc582f5cb6c7053c3c354393d205b03ab39ecf4901f7ae605214fc9f1cd32ca75671f2e2584f0ad8b98723b58ac81a5dc9bbe16043761c5e6f3e6ad60b6731bae729a4a83e205d07ac7f227f745c8c5ac598c5b527c9f52a41045cda210f7b1083552a79df56f6"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+
+#Files
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Password Hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -39,8 +49,8 @@ def create_access_token(data: dict, expires_delta: timedelta):
 
 def send_email(to_email: str, auth_code: str):
     # Replace with actual SMTP settings
-    sender_email = ""
-    sender_password = ""
+    sender_email = os.getenv("SENDER_EMAIL")
+    sender_password = os.getenv("SENDER_PASSWORD")
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
 
@@ -62,10 +72,20 @@ def send_email(to_email: str, auth_code: str):
 
 # API Endpoints
 @app.post("/register/")
-def register_user(name: str, email: str, password: str, session: Session = Depends(lambda: Session(engine))):
+def register_user(name: str = Annotated[str, Form()],
+                  email: str = Annotated[str, Form()],
+                  password: str = Annotated[str, Form()],
+                  profile_photo: UploadFile = File(...),
+                  session: Session = Depends(lambda: Session(engine))):
+    
     existing_user = session.exec(select(User).where(User.email == email)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
+
+    file_location = f"{UPLOAD_FOLDER}/{profile_photo.filename}"
+
+    with open(file_location, "wb") as f:
+        f.write(profile_photo.file.read())
 
     hashed_password = hash_password(password)
     auth_code = create_auth_code()
