@@ -1,15 +1,17 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Form, UploadFile, File, Depends, HTTPException, status
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
 import smtplib
 from email.mime.text import MIMEText
-from typing import Optional
+from typing import Optional, Annotated
 import random
 import string
 from dotenv import load_dotenv
 import os
+from pathlib import Path
+import shutil
 
 from models import engine, User, create_db
 
@@ -21,6 +23,10 @@ app = FastAPI()
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+
+#Files
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Password Hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -66,10 +72,20 @@ def send_email(to_email: str, auth_code: str):
 
 # API Endpoints
 @app.post("/register/")
-def register_user(name: str, email: str, password: str, session: Session = Depends(lambda: Session(engine))):
+def register_user(name: str = Annotated[str, Form()],
+                  email: str = Annotated[str, Form()],
+                  password: str = Annotated[str, Form()],
+                  profile_photo: UploadFile = File(...),
+                  session: Session = Depends(lambda: Session(engine))):
+    
     existing_user = session.exec(select(User).where(User.email == email)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
+
+    file_location = f"{UPLOAD_FOLDER}/{profile_photo.filename}"
+
+    with open(file_location, "wb") as f:
+        f.write(profile_photo.file.read())
 
     hashed_password = hash_password(password)
     auth_code = create_auth_code()
